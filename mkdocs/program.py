@@ -24,7 +24,7 @@ def process_directory(indirpath: str, outdirpath: str, override=False):
             os.rmdir(outdirpath)
         else:
             raise ValueError(f"(process_directory) {outdirpath} exists, and override set to 0")
-    logging.log(f"(process_directory) creating directory {outdirpath}")
+    logging.info(f"(process_directory) creating directory {outdirpath}")
 
     os.mkdir(outdirpath)
     dir: list[str] = os.listdir(indirpath)
