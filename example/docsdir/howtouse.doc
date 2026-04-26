@@ -1,0 +1,17 @@
+<page_title>
+How to use
+
+<body_title>
+How to use MKDOCS
+
+<description>
+mkdocs (make docs) - utility written in pure python designed to generate different docs format (like HTML) from single .doc formatted files
+
+<usage>
+mkdocs dir docsdir htmldir
+
+<examples end=</examples>>
+
+<example 1 end="@example 1 end">
+mkdocs file file.doc page.html
+@example 1 end
