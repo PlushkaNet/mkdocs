@@ -1,6 +1,8 @@
+import logging
 from sys import argv
 from mkdocs import tests
 from mkdocs.program import process_file, process_directory
+import logging
 
 
 def argv_check(expected: int) -> bool:
@@ -11,6 +13,10 @@ def argv_check(expected: int) -> bool:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(levelname)s: %(message)s"
+    )
+    logging.getLogger().setLevel(logging.INFO)
     if len(argv) > 1:
         if argv[1] == "test":
             if len(argv) > 2:
@@ -30,14 +36,14 @@ if __name__ == "__main__":
             if argv_check(4):
                 try:
                     process_file(argv[2], argv[3])
-                except:
-                    print("error: failed to read/create file")
+                except Exception as e:
+                    print(f"error: failed to read/create file\ne: {e}")
         elif argv[1] == "dir":
             if argv_check(4):
                 try:
                     process_directory(argv[2], argv[3])
-                except:
-                    print("error: failed to read/create files")
+                except Exception as e:
+                    print(f"error: failed to read/create files\ne: {e}")
         else:
             print("error: undefined argument")
     else:

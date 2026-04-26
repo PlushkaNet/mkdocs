@@ -21,29 +21,19 @@ class OlDOC_Template(Template):
 
     # TODO optimize
     def _build_examples(self) -> str:
-        snippets_and_addinfo: dict[str, dict[str, str]] = {}
+        compl = ""
+        
         if self.examples:
             gtags: list[GTag] = parse_tree(split_by_lines(self.examples))
             for gtag in gtags:
                 if gtag.child:
-                    addinfo: dict[str, str] = {} # {URL: description}
+                    compl += h.xmp(gtag.child) # snippet
                     if gtag.ltags and gtag.ltags[0].tag.name == "related":
                         relgtags: list[GTag] = parse_tree(split_by_lines(gtag.ltags[0].child))
                         for relgtag in relgtags:
                             if relgtag.tag.subtags.get("url"):
-                                addinfo[relgtag.tag.subtags["url"]] = relgtag.child
-                    snippets_and_addinfo[gtag.child] = addinfo
-        # complete tree should looks like
-        # {"code": {"/url":"description", "/url2":"description"}}
-
-        # build section
-
-        compl = ""
-        for snippet, addinfo in snippets_and_addinfo.items():
-            compl += h.xmp(snippet)
-            for url, desc in addinfo.items():
-                compl += h.p(h.a(desc, href=url))
-            compl += h.hr()
+                                compl += h.p(h.a(relgtag.child, href=relgtag.tag.subtags["url"]))
+                    compl += h.hr()
 
         return compl
     
@@ -63,7 +53,7 @@ class OlDOC_Template(Template):
                 ) if self.body_title else "",
                 h.multiple(
                     h.h2("Description"),
-                    h.p(h.htmlify(self.description)),
+                    h.p(h.pwrap(h.htmlify(self.description))),
                     h.hr()
                 ) if self.description else "",
                 h.multiple(

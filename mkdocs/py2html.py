@@ -35,8 +35,32 @@ HTMLIFY_TRANSTABLE = str.maketrans(
 )
 
 
-def htmlify(text: str):
+def htmlify(text: str) -> str:
     return text.translate(HTMLIFY_TRANSTABLE)
+
+
+def pwrap(text: str):
+    compl: str = "<p>"
+    isnew: bool = True
+    for i in text:
+        if i == "\n":
+            if isnew:
+                compl = compl.removesuffix("<p>")
+                compl += "<br>"
+            else:
+                compl += "</p>"
+                isnew = True
+            compl += "<p>"
+        else:
+            isnew = False
+            compl += i
+
+    if isnew:
+        compl = compl.removesuffix("<p>")
+    else:
+        compl += "</p>"
+
+    return compl
 
 
 meta = make_tag("meta", True)
