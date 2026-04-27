@@ -9,4 +9,4 @@ version = "0.111"
 # - added override possible argument in process_directory (program.py), but there's no flag to activate it in __main__.py
 
 # hotfix 0.111
-# - fixed program not working in cause of mistake in process_directory (program.py) 
+# - fixed program not working in cause of mistake in process_directory (program.py)

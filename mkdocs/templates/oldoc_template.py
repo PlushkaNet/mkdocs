@@ -45,27 +45,26 @@ class OlDOC_Template(Template):
                 h.title(self.page_title) if self.page_title else ""
             ),
             h.body(
-                h.multiple(
+                h.insert(
                     h.center(
                         h.h1(self.body_title)
-                    ),
-                    h.hr()
-                ) if self.body_title else "",
-                h.multiple(
+                    ), h.hr()
+                ).If(self.body_title),
+                h.insert(
                     h.h2("Description"),
                     h.p(h.pwrap(h.htmlify(self.description))),
                     h.hr()
-                ) if self.description else "",
-                h.multiple(
+                ).If(self.description),
+                h.insert(
                     h.h2("Usage"),
                     h.spacing(4),
                     h.code(h.htmlify(self.usage)),
                     h.hr()
-                ) if self.usage else "",
-                h.multiple(
+                ).If(self.usage),
+                h.insert(
                     h.h2("Examples"),
                     h.hr(),
                     self._build_examples()
-                ) if self.examples else ""
+                ).If(self.examples)
             )
         )

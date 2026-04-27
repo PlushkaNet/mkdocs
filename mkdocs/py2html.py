@@ -1,29 +1,25 @@
-from typing import Optional
+from typing import Callable, Union
 
-def make_tag(name: str, non_closing=False):
-    def tag(content: Optional[str]=None, **kwargs) -> str:
-        otag = f"<{name}"
+def make_tag(name: str, non_closing=False) -> Callable[[tuple[str], dict[str, Union[str, int, float]]], str]:
+    def tag(*args, **kwargs) -> str:
+        compl: str = f"<{name}"
         for k, v in kwargs.items():
-            otag += f' {k}="{v}"'
-        return f"{otag}>" + (content if content else "") + (f"</{name}>" if (not non_closing) else "")
+            compl += f' {k}="{v}"'
+        return compl + ">" + "".join(args) + (f"</{name}>" if (not non_closing) else "")
     return tag
 
 
+# deprecated; use standart make_tag instead
 def multiple_tag(name: str):
-    def tag(*args):
-        compl = f"<{name}>"
-        for i in args:
-            compl += i
-        return compl + f"</{name}>"
+    def tag(*args) -> str:
+        return f"<{name}>" + "".join(args) + f"</{name}>"
 
     return tag
 
 
-def multiple(*tags):
-    compl = ""
-    for i in tags:
-        compl += i
-    return compl
+# deprecated; use make_tag instead
+def multiple(*tags) -> str:
+    return "".join(tags)
 
 
 def spacing(num: int):
@@ -39,7 +35,29 @@ def htmlify(text: str) -> str:
     return text.translate(HTMLIFY_TRANSTABLE)
 
 
-def pwrap(text: str):
+class insert:
+    def __init__(self, *args):
+        self._content = "".join(args)
+
+    def If(self, eval_bool) -> str:
+        if eval_bool:
+            return self._content
+        return ""
+
+    def Repeat(self, times: int) -> str:
+        single: str = self._content
+        for i in range(times):
+            self._content += single
+        return self._content
+
+    def Htmlify(self) -> str: return htmlify(self._content)
+    
+    def __str__(self) -> str: return self._content
+
+    def html(self) -> str: return self.__str__()
+
+
+def pwrap(text: str) -> str:
     compl: str = "<p>"
     isnew: bool = True
     for i in text:
@@ -66,11 +84,11 @@ def pwrap(text: str):
 meta = make_tag("meta", True)
 hr = make_tag("hr", True)
 br = make_tag("br", True)
-head = multiple_tag("head")
+head = make_tag("head")
 center = make_tag("center")
 title = make_tag("title")
-html = multiple_tag("html")
-body = multiple_tag("body")
+html = make_tag("html")
+body = make_tag("body")
 h1 = make_tag("h1")
 h2 = make_tag("h2")
 h3 = make_tag("h3")
